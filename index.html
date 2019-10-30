@@ -38,7 +38,6 @@
     }
 
     Promise.all(req).then(function(result){//Wait until sample downloaded
-      console.log(result);
       clues=[];
       for(var i=0;i<result.length;i++){
         clues=clues.concat(result[i]);
@@ -55,7 +54,6 @@
         x.hash=q;
         return x;
       });
-      console.log(clues.length);
       search();
 
     });
@@ -72,10 +70,8 @@
   * Compares input agaisnt all downloaded questions
   */
   function search(){
-    console.log(clues);
     var input=document.getElementById("input").value;
     var check=input.toLowerCase().replace(/[^\w\s]/gi,"").split(" ");//Remove non alpha numeric and split into array of words
-    console.log(check);
     check=check.filter(function(x){
       if(commonWords.indexOf(x)!=-1){//Remove common words
         return false;
@@ -83,7 +79,6 @@
         return true;
       }
     });
-    console.log(check);
     check=check.sort(function(x,y){//Sort by length of word
       return x.length-y.length;
     });
@@ -133,7 +128,6 @@
       }
       */
       while(j<y.length&&x[i].length>=y[j].length){//Loop only through words of lesser or same length
-        console.log(x[i],y[j]);
         if(x[i]==y[j]){
           count++;
         }

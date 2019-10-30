@@ -1,0 +1,113 @@
+<h1>Input Jeopardy Search</h1>
+<input id="input" type="text" onchange="getClues()">
+<div id="output">
+</div>
+
+
+<script>
+
+  var displayCount=10;
+
+  var clues=[];
+
+
+  //Pull 1000 random questions
+  function getClues(){
+
+    var req=[];
+    for(var i=0;i<10;i++){
+      req.push(fetch("http://jservice.io/api/random?count=100").then(function(x){//Get random sample of questions
+        return x.json();
+      }))
+    }
+
+    Promise.all(req).then(function(result){//Wait until sample downloaded
+      console.log(result);
+      clues=[];
+      for(var i=0;i<result.length;i++){
+        clues=clues.concat(result[i]);
+      }
+
+      //Get hash for each question
+      clues=clues.map(function(x){
+        var q=x.question;
+        q=q.toLowerCase().replace(/[^\w\s]/gi,"").split(" ");//Remove non alpha numeric and split into array of words
+        q=q.sort(function(x,y){//Sort by length of word
+          return x.length-y.length;
+        });
+
+        x.hash=q;
+        return x;
+      });
+      console.log(clues.length);
+      search();
+
+    });
+
+
+
+
+  }
+
+
+
+  /**
+  * Display Search results for given term
+  *
+  */
+  function search(){
+    console.log(clues);
+    var input=document.getElementById("input").value;
+    var check=input.toLowerCase().replace(/[^\w\s]/gi,"").split(" ");//Remove non alpha numeric and split into array of words
+    check=check.sort(function(x,y){//Sort by length of word
+      return x.length-y.length;
+    });
+
+
+    //Rank results
+    var results=clues.sort(function(x,y){
+      return compare(check,y.hash)-compare(check,x.hash);
+    });
+
+
+    document.getElementById("output").innerHTML="";
+
+    for(var i=0;i<displayCount;i++){//Display top results
+      if(compare(check,results[i].hash)>0){//Need at least one instance
+        document.getElementById("output").innerHTML+=results[i].question+"<br><br>";
+      }
+    }
+
+
+  }
+
+
+
+
+
+  /**
+  * Compare to sentences represented as arrays
+  * in order to determine similarity.
+  */
+  function compare(x,y){
+    var count=0;
+
+    //Count the similar amounts of words
+    for(var i=0;i<x.length;i++){
+      var j=0;
+      for(var j=0;j<y.length;j++){
+        if(x[i]==y[j]){
+          count++;
+        }
+      }
+      /*
+      while(x[i].length>=y[j].length&&j<y.length){//Loop only through words of lesser or same length
+      j++;
+    }
+    */
+  }
+  return count;
+}
+
+
+</script>

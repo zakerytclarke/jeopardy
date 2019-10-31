@@ -1,7 +1,54 @@
-<h1>Input Jeopardy Search</h1>
-<input id="input" type="text" onchange="processInput()">
-<div id="output">
-</div>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Jeopardy</title>
+  <meta name="viewport" content="width=device-width">
+  <style>
+    body{
+      color:#DC9D4E;
+      background-color:#0C0304;
+      text-align:center;
+    }
+    .tile{
+      background-color:#020D8B;
+      border-radius:2vmin;
+      width:20vw;
+      padding:10px;
+      display:inline-block;
+      vertical-align:top;
+      margin-bottom:30px;
+      margin-right:1vw;
+      min-height:20vw;
+    }
+
+    #input{
+      width:40vw;
+      font-size:200%;
+      text-align:center;
+      border: 3px #020D8B solid;
+      border-radius:2vmin;
+      color:#DC9D4E;
+      background-color:#0C0304;
+      margin-bottom:30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Jeopardy Search</h1>
+  <input id="input" type="text" onchange="processInput()">
+  <div id="output">
+  </div>
+    <div class="container">
+      <div id="container" class="col-md-8 col-md-offset-2">  </div>
+    </div>
+
+    <script src="https://fb.me/react-15.1.0.js"></script>
+    <script src="https://fb.me/react-dom-15.1.0.js"></script>
+
+</body>
+</html>
+
+
 
 
 <script>
@@ -14,7 +61,7 @@
   var commonWords=articles.concat(conjunctions).concat(prepositions).concat(misc);//Words that shouldn't be searched against
 
 
-  var displayCount=10;
+  var displayCount=12;
   var maxRequests=100;//Check roughly the whole database
   var amountDisplayed=0;
   var callCount=0;
@@ -93,7 +140,7 @@
 
     for(var i=0;i<displayCount-amountDisplayed;i++){//Display top results
       if(compare(check,results[i].hash)>0){//Need at least one instance
-        document.getElementById("output").innerHTML+=results[i].category.title+" ("+results[i].value+")<br>"+results[i].question+" -- "+results[i].answer+"<br><br>";
+        drawTile(results[i]);
         amountDisplayed++;
       }
     }
@@ -137,5 +184,12 @@
   return count;
 }
 
+
+
+function drawTile(clue){
+  //document.getElementById("output").innerHTML+=results[i].category.title+" ("+results[i].value+")<br>"+results[i].question+" -- "+results[i].answer+"<br><br>";
+  document.getElementById("output").innerHTML+="<div class='tile'><h3>"+clue.category.title+"&nbsp;&nbsp;&nbsp;&nbsp;$"+clue.value+"</h3><p>"+clue.question+"</p><p>"+clue.answer+"</p></div>";
+
+}
 
 </script>
